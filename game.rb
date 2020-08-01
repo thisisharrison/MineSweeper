@@ -1,5 +1,7 @@
 require "byebug"
+require "yaml"
 require_relative "board"
+
 
 class Game
     def initialize
@@ -37,10 +39,24 @@ class Game
             tile.toggle_flag
         when "e"
             tile.explore
+        when "s"
+            save
         end
+    end
+
+    def save
+        puts "Enter filename to save at:"
+        filename = gets.chomp
+
+        File.write(filename, YAML.dump(self))
     end
 end
 
 if __FILE__ == $PROGRAM_NAME 
-    Game.new().play
+    case ARGV.count
+    when 0
+        Game.new().play
+    when 1
+        YAML::load_file(ARGV.shift).play
+    end
 end
